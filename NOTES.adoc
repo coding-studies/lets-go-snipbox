@@ -1,0 +1,30 @@
+= Miscellaneous Notes
+:page-tags: go cmdline tips
+:favicon: https://fernandobasso.dev/cmdline.png
+:icons: font
+:sectlinks:
+:sectnums!:
+:toclevels: 6
+:toc: left
+:source-highlighter: highlight.js
+:stem: latexmath
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+== Intro
+
+This file contains some commands or other things that I have found important to job down for quick lookup.
+
+== Foundations
+
+To run a project containing a `main.go` file with a `main()` function in the current directory:
+
+[source,bash]
+----
+$ go run .
+----
