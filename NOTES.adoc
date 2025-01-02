@@ -51,3 +51,12 @@ A pattern like `/foo/view` (no trailing slash) matches exactly "/foo/view".
 
 A pattern like `/foo/view/` (with a trailing slash), which is known as a _subtree path pattern_, matches paths _starting_ with `/foo/view`, like if it was like `/foo/view/**`.
 It explains why `/` is a _catch all_ pattern.
+
+To prevent `/` for being treated as a catch-all glob, add `{$}` after it:
+
+`"/{$}"`:: Strictly match only the "/" root path (a single “/” followed by nothing else).
+`"/foo/view/{$}"`:: Strictly match "/foo/view/ (ending with the “/”, followed by nothing else).
+
+It means a route pattern like `"/foo/view/{$}"` will require the request URL to be "https://example.org/foo/view/", including the trailing slash), else it will not match.
+
+Using `{$}` is only valid after the `/`, as route patterns that do not end with the slash are strict by definition.
