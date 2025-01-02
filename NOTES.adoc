@@ -28,3 +28,7 @@ To run a project containing a `main.go` file with a `main()` function in the cur
 ----
 $ go run .
 ----
+
+=== ServerMux
+
+ServerMux treads route pattern “/” as _catch all_ wildcard.
