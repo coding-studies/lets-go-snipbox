@@ -32,3 +32,6 @@ $ go run .
 === ServerMux
 
 ServerMux treads route pattern “/” as _catch all_ wildcard.
+
+A host like ":4000" means all inter faces on the server machine, on port 400.
+It is possible to use _named ports_ like ":http" or ":http-alt", in which case `http.ListenAndServe()` will attempt to use `/etc/services` to determine the port numbers.
