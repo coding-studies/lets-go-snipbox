@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 // home is a handler which writes a byte slicing simple text as the
@@ -12,8 +14,16 @@ func home(w http.ResponseWriter, _ *http.Request) {
 }
 
 // snippetView is a handler for viewing a specific snippet.
-func snippetView(w http.ResponseWriter, _ *http.Request) {
-	w.Write([]byte("Display a specific snippet."))
+func snippetView(w http.ResponseWriter, r *http.Request) {
+	// Extract and validate the id wildcard path parameter.
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	msg := fmt.Sprintf("Display a specific snippet with ID %d", id)
+	w.Write([]byte(msg))
 }
 
 // snippetCreate displays a form for creating a snippet.
@@ -26,7 +36,7 @@ func main() {
 	// register the home function as the handler for the "/" URL pattern.
 	mux := http.NewServeMux()
 	mux.HandleFunc("/{$}", home)
-	mux.HandleFunc("/snippet/view", snippetView)
+	mux.HandleFunc("/snippet/view/{id}", snippetView)
 	mux.HandleFunc("/snippet/create", snippetCreate)
 
 	// Print a log message to say that the server is starting.
