@@ -33,6 +33,7 @@ func snippetCreate(w http.ResponseWriter, _ *http.Request) {
 
 // snippetCreatePost processes the post request to create a new snippet.
 func snippetCreatePost(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(201)
 	w.Write([]byte("Save a new snippet"))
 }
 
