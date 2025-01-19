@@ -10,6 +10,7 @@ import (
 // home is a handler which writes a byte slicing simple text as the
 // response body.
 func home(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Add("Server", "Go")
 	w.Write([]byte("Hello Snipbox"))
 }
 
