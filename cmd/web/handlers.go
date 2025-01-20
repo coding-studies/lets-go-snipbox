@@ -14,8 +14,9 @@ func home(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Add("Server", "Go")
 
 	templates := []string{
-		"./cmd/web/ui/html/pages/home.tmpl.html",
 		"./cmd/web/ui/html/base.tmpl.html",
+		"./cmd/web/ui/html/partials/nav.tmpl.html",
+		"./cmd/web/ui/html/pages/home.tmpl.html",
 	}
 
 	ts, err := template.ParseFiles(templates...)
