@@ -1,41 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 )
-
-// home is a handler which writes a byte slicing simple text as the
-// response body.
-func home(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Add("Server", "Go")
-	w.Write([]byte("Hello Snipbox"))
-}
-
-// snippetView is a handler for viewing a specific snippet.
-func snippetView(w http.ResponseWriter, r *http.Request) {
-	// Extract and validate the id wildcard path parameter.
-	id, err := strconv.Atoi(r.PathValue("id"))
-	if err != nil || id < 1 {
-		http.NotFound(w, r)
-		return
-	}
-
-	fmt.Fprintf(w, "Display a specific snippet with ID %d", id)
-}
-
-// snippetCreate displays a form for creating a snippet.
-func snippetCreate(w http.ResponseWriter, _ *http.Request) {
-	w.Write([]byte("Display a form for creating a new snippet"))
-}
-
-// snippetCreatePost processes the post request to create a new snippet.
-func snippetCreatePost(w http.ResponseWriter, _ *http.Request) {
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Save a new snippet"))
-}
 
 func main() {
 	// Use the http.NewServeMux() function to initialize a new servemux, then
@@ -58,4 +26,5 @@ func main() {
 	err := http.ListenAndServe(":4000", mux)
 
 	log.Fatal(err)
+
 }

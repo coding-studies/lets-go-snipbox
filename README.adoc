@@ -19,3 +19,10 @@ endif::[]
 == Intro
 
 Start the project with go 1.23.1.
+
+== Run the web application
+
+[source,bash]
+----
+$ go run ./cmd/web
+----
