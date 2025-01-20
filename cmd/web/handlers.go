@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -10,7 +12,20 @@ import (
 // response body.
 func home(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Add("Server", "Go")
-	w.Write([]byte("Hello Snipbox"))
+
+	ts, err := template.ParseFiles("./cmd/web/ui/html/pages/home.tmpl.html")
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = ts.Execute(w, nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }
 
 // snippetView is a handler for viewing a specific snippet.
