@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -44,7 +43,6 @@ func main() {
 	mux.HandleFunc("GET /snippet/create", snippetCreate)
 	mux.HandleFunc("POST /snippet/create", snippetCreatePost)
 
-	log.Print("starting server on " + *addr)
 	logger.Info("starting server", slog.String("port", *addr))
 
 	err := http.ListenAndServe(*addr, mux)
