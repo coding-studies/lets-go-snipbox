@@ -7,12 +7,18 @@ import (
 )
 
 func main() {
+	////
 	// Take command line argument `-addr`. E.g.:
 	//
 	//   $ go run ./cmd/web -addr=":4004"
 	//   $ go run ./cmd/web -addr=":80"
 	//
 	// Uses ":4000" that cmdline option -addr is not provided.
+	//
+	// And use this to get a list of command line flags this package supports:
+	//
+	//   $ go run ./cmd/web -help
+	//
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
 
