@@ -24,7 +24,15 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP network address")
 	flag.Parse()
 
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+	////
+	// Log as JSON and make logs include debugging logs as well instead of
+	// the default behavior which is to only log from info and above. Also
+	// includes the source location where the log is being issued from.
+	//
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		Level:     slog.LevelDebug,
+		AddSource: true,
+	}))
 
 	mux := http.NewServeMux()
 
