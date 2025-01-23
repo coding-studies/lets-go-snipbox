@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"log/slog"
 	"net/http"
 	"strconv"
 )
 
 // home is a handler which writes a byte slicing simple text as the
 // response body.
-func (a *application) home(w http.ResponseWriter, _ *http.Request) {
+func (a *application) home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Server", "Go")
 
 	templates := []string{
@@ -23,6 +24,7 @@ func (a *application) home(w http.ResponseWriter, _ *http.Request) {
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		a.logger.Error(err.Error(), slog.String("method", r.Method), slog.String("uri", r.URL.RequestURI()))
 		return
 	}
 
