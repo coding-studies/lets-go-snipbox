@@ -64,3 +64,13 @@ INSERT INTO users (
     ('Ahsoka Tano')
   , ('Leia Organa')
   , ('Aayla Secura');
+
+CREATE TABLE snippets (
+    id SERIAL PRIMARY KEY
+  , title VARCHAR(128) NOT NULL
+  , content TEXT NOT NULL
+  , created DATATIME NOT NULL
+  , expires DATETIME NOT NULL
+);
+
+CREATE INDEX idx_snippets_created ON snippets(created);
