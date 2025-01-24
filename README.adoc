@@ -26,3 +26,20 @@ Start the project with go 1.23.1.
 ----
 $ go run ./cmd/web
 ----
+
+== PostgreSQL database
+
+Start the docker and run docker compose.
+
+[source,bash]
+----
+$ cd ./docker
+$ docker compose up
+----
+
+On another shell session, connect to the database:
+
+[source,bash]
+----
+$ docker exec -it pgsnipbox psql -U dev -d snipbox_dev
+----
