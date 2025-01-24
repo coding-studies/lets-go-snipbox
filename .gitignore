@@ -2,3 +2,8 @@
 # JetBrains.
 #
 .idea
+
+##
+# We can commit .env-example, but NEVER the actual .env file!
+#
+.env

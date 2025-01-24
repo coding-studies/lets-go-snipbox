@@ -1,0 +1,35 @@
+#
+# IMPORTANT:
+#
+# Take a look at .env-example and follow the instructions in that file.
+#
+
+services:
+  ##
+  # Assuming we have the container pgsnipbox, a role called dev, and a database
+  # called snipbox_dev which belongs to the role dev, then we'll be able to
+  # shell into this container with something like this:
+  #
+  #   $ docker exec -it pgsnipbox /bin/bash
+  #
+  # And from there into psql CLI with:
+  #
+  #   # psql -h <host> -U dev -d snipbox_dev
+  #
+  # Or directly from the host system shell into psql with:
+  #
+  #   $ docker exec -it pgsnipbox psql -U dev -d snipbox_dev
+  #   $ docker exec -it pgsnipbox psql -U dev -d dev
+  #
+  db:
+    image: postgres:17
+    container_name: pgsnipbox
+    restart: always
+    env_file: .env
+    volumes:
+      - "pg_snipbox_db_data:/var/lib/postgresql/data"
+      - "./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+      - "./dbdumps/:/dbdumps"
+
+volumes:
+  pg_snipbox_db_data:
