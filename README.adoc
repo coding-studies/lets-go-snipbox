@@ -18,18 +18,39 @@ endif::[]
 
 == Intro
 
-Start the project with go 1.23.1.
+Started the project with go 1.23.1.
 
 == Run the web application
 
+Providing the database authentication details is necessary.
+This is currently done through the shell's environment variables:
+
 [source,bash]
 ----
-$ go run ./cmd/web
+$ PG_HOST=localhost \
+    PG_USER=user \
+    PG_PASS=pass \
+    PG_DBNAME=dbname \
+    go run ./cmd/web \
+    -addr=':4000'
+----
+
+Or with gow:
+
+[source,bash]
+----
+$ PG_HOST=localhost \
+    PG_USER=user \
+    PG_PASS=pass \
+    PG_DBNAME=dbname \
+    $GOPATH/bin/gow -e=go,html run ./cmd/web \
+    -addr=':4000'
 ----
 
 == PostgreSQL database
 
-Start the docker and run docker compose.
+The PostgreSQL database is provided through docker.
+Start it with these commands:
 
 [source,bash]
 ----

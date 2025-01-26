@@ -1,10 +1,15 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
+	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
+
+	_ "github.com/lib/pq"
 )
 
 type application struct {
@@ -12,19 +17,35 @@ type application struct {
 }
 
 func main() {
-	////
-	// Take command line argument `-addr`. E.g.:
-	//
-	//   $ go run ./cmd/web -addr=":4004"
-	//   $ go run ./cmd/web -addr=":80"
-	//
-	// Uses ":4000" that cmdline option -addr is not provided.
-	//
-	// And use this to get a list of command line flags this package supports:
-	//
-	//   $ go run ./cmd/web -help
-	//
 	addr := flag.String("addr", ":4000", "HTTP network address")
+
+	var (
+		pgHost    = ""
+		pgUser    = ""
+		pgPass    = ""
+		pgDBName  = ""
+		pgSSLMode = "disable"
+	)
+
+	pgHost = os.Getenv("PG_HOST")
+	pgUser = os.Getenv("PG_USER")
+	pgPass = os.Getenv("PG_PASS")
+	pgDBName = os.Getenv("PG_DBNAME")
+	pgSSLMode = os.Getenv("PG_SSLMODE")
+
+	dsn := flag.String(
+		"dsn",
+		fmt.Sprintf(
+			"host=%s user=%s password=%s dbname=%s sslmode=%s",
+			pgHost,
+			pgUser,
+			pgPass,
+			pgDBName,
+			pgSSLMode,
+		),
+		"Postgres Data Source Name",
+	)
+
 	flag.Parse()
 
 	////
@@ -37,15 +58,37 @@ func main() {
 		AddSource: true,
 	}))
 
+	db, err := openDB(*dsn)
+	defer db.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	app := &application{
 		logger: logger,
 	}
 
 	logger.Info("starting server", slog.String("port", *addr))
 
-	err := http.ListenAndServe(*addr, app.routes())
+	err = http.ListenAndServe(*addr, app.routes())
 
 	logger.Error(err.Error())
 
 	os.Exit(1)
+}
+
+func openDB(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dsn)
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		db.Close()
+		return nil, err
+	}
+
+	return db, nil
 }
