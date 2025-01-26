@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS snippets (
   , expires TIMESTAMP NOT NULL
   );
 
-ALTER TABLE users OWNER TO dev;
+ALTER TABLE snippets OWNER TO dev;
 
 CREATE INDEX idx_snippets_created ON snippets(created);
 
