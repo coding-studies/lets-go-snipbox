@@ -65,12 +65,36 @@ INSERT INTO users (
   , ('Leia Organa')
   , ('Aayla Secura');
 
-CREATE TABLE snippets (
-    id SERIAL PRIMARY KEY
+CREATE TABLE IF NOT EXISTS snippets (
+                                      id SERIAL PRIMARY KEY
   , title VARCHAR(128) NOT NULL
   , content TEXT NOT NULL
-  , created DATATIME NOT NULL
-  , expires DATETIME NOT NULL
-);
+  , created TIMESTAMP NOT NULL
+  , expires TIMESTAMP NOT NULL
+  );
+
+ALTER TABLE users OWNER TO dev;
 
 CREATE INDEX idx_snippets_created ON snippets(created);
+
+INSERT INTO snippets (
+    title
+  , content
+  , created
+  , expires
+) VALUES (
+    'An old silent pond'
+  , 'An old silent pond...\nA frog jumps into the pond,\nsplash! Silence again.\n\n– Matsuo Bashō'
+  , CURRENT_TIMESTAMP
+  , CURRENT_TIMESTAMP + '1 year'
+), (
+     'Over the wintry forest'
+   , 'Over the wintry forest\n,winds howl in rage\nwith no leaves to blow.\n\n– Natsume Soseki'
+   , CURRENT_TIMESTAMP
+   , CURRENT_TIMESTAMP + '1 year'
+), (
+     'First autumn morning'
+   , 'First autumn morning\nthe mirror I stare into\nshows my father''s face.\n\n– Murakami Kijo'
+   , CURRENT_TIMESTAMP
+   , CURRENT_TIMESTAMP + '1 year'
+);
