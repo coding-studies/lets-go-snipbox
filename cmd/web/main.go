@@ -31,7 +31,10 @@ func main() {
 	pgUser = os.Getenv("PG_USER")
 	pgPass = os.Getenv("PG_PASS")
 	pgDBName = os.Getenv("PG_DBNAME")
-	pgSSLMode = os.Getenv("PG_SSLMODE")
+
+	if os.Getenv("PG_SSLMODE") != "" {
+		pgSSLMode = os.Getenv("PG_SSLMODE")
+	}
 
 	dsn := flag.String(
 		"dsn",
