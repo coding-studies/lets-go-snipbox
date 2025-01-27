@@ -46,8 +46,18 @@ func (a *application) snippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 // snippetCreate displays a form for creating a snippet.
-func (a *application) snippetCreate(w http.ResponseWriter, _ *http.Request) {
-	w.Write([]byte("Display a form for creating a new snippet"))
+func (a *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
+	title := "O snail"
+	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
+	expires := 7
+
+	insertedSnippetID, err := a.snippets.Insert(title, content, expires)
+	if err != nil {
+		a.serverError(w, r, err)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", insertedSnippetID), http.StatusSeeOther)
 }
 
 // snippetCreatePost processes the post request to create a new snippet.
