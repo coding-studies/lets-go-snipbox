@@ -10,12 +10,12 @@ import (
 
 // home is a handler which writes a byte slicing simple text as the
 // response body.
-func (a *application) home(w http.ResponseWriter, r *http.Request) {
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Server", "Go")
 
-	snippets, err := a.snippets.Latest()
+	snippets, err := app.snippets.Latest()
 	if err != nil {
-		a.serverError(w, r, err)
+		app.serverError(w, r, err)
 		return
 	}
 
@@ -32,19 +32,19 @@ func (a *application) home(w http.ResponseWriter, r *http.Request) {
 	//ts, err := template.ParseFiles(templates...)
 	//if err != nil {
 	//	log.Print(err.Error())
-	//	a.serverError(w, r, err)
+	//	app.serverError(w, r, err)
 	//	return
 	//}
 	//
 	//err = ts.ExecuteTemplate(w, "base", nil)
 	//if err != nil {
-	//	a.serverError(w, r, err)
+	//	app.serverError(w, r, err)
 	//	return
 	//}
 }
 
 // snippetView is a handler for viewing a specific snippet.
-func (a *application) snippetView(w http.ResponseWriter, r *http.Request) {
+func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 	// Extract and validate the id wildcard path parameter.
 	id, err := strconv.Atoi(r.PathValue("id"))
 	if err != nil || id < 1 {
@@ -52,12 +52,12 @@ func (a *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	snippet, err := a.snippets.Get(id)
+	snippet, err := app.snippets.Get(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			http.NotFound(w, r)
 		} else {
-			a.serverError(w, r, err)
+			app.serverError(w, r, err)
 		}
 
 		return
@@ -68,14 +68,14 @@ func (a *application) snippetView(w http.ResponseWriter, r *http.Request) {
 }
 
 // snippetCreate displays a form for creating a snippet.
-func (a *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
+func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 	title := "O snail"
 	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
 	expires := 7
 
-	insertedSnippetID, err := a.snippets.Insert(title, content, expires)
+	insertedSnippetID, err := app.snippets.Insert(title, content, expires)
 	if err != nil {
-		a.serverError(w, r, err)
+		app.serverError(w, r, err)
 		return
 	}
 
@@ -83,7 +83,7 @@ func (a *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 // snippetCreatePost processes the post request to create a new snippet.
-func (a *application) snippetCreatePost(w http.ResponseWriter, _ *http.Request) {
+func (app *application) snippetCreatePost(w http.ResponseWriter, _ *http.Request) {
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Save a new snippet"))
+	w.Write([]byte("Save app new snippet"))
 }
