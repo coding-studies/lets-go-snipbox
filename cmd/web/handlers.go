@@ -3,8 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
-	"log"
 	"net/http"
 	"snipbox.fernandobasso.dev/internal/models"
 	"strconv"
@@ -15,24 +13,34 @@ import (
 func (a *application) home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Server", "Go")
 
-	templates := []string{
-		"./cmd/web/ui/html/base.tmpl.html",
-		"./cmd/web/ui/html/partials/nav.tmpl.html",
-		"./cmd/web/ui/html/pages/home.tmpl.html",
-	}
-
-	ts, err := template.ParseFiles(templates...)
-	if err != nil {
-		log.Print(err.Error())
-		a.serverError(w, r, err)
-		return
-	}
-
-	err = ts.ExecuteTemplate(w, "base", nil)
+	snippets, err := a.snippets.Latest()
 	if err != nil {
 		a.serverError(w, r, err)
 		return
 	}
+
+	for _, snippet := range snippets {
+		fmt.Fprintf(w, "%+v\n", snippet)
+	}
+
+	//templates := []string{
+	//	"./cmd/web/ui/html/base.tmpl.html",
+	//	"./cmd/web/ui/html/partials/nav.tmpl.html",
+	//	"./cmd/web/ui/html/pages/home.tmpl.html",
+	//}
+	//
+	//ts, err := template.ParseFiles(templates...)
+	//if err != nil {
+	//	log.Print(err.Error())
+	//	a.serverError(w, r, err)
+	//	return
+	//}
+	//
+	//err = ts.ExecuteTemplate(w, "base", nil)
+	//if err != nil {
+	//	a.serverError(w, r, err)
+	//	return
+	//}
 }
 
 // snippetView is a handler for viewing a specific snippet.
