@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
+	"snipbox.fernandobasso.dev/internal/models"
 	"strconv"
 )
 
@@ -42,7 +44,19 @@ func (a *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Display a specific snippet with ID %d", id)
+	snippet, err := a.snippets.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			http.NotFound(w, r)
+		} else {
+			a.serverError(w, r, err)
+		}
+
+		return
+	}
+
+	// Write snippet as plain/text for now.
+	fmt.Fprintf(w, "%+v", snippet)
 }
 
 // snippetCreate displays a form for creating a snippet.
