@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"html/template"
 	"net/http"
 	"snipbox.fernandobasso.dev/internal/models"
 	"strconv"
@@ -63,8 +64,22 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Write snippet as plain/text for now.
-	fmt.Fprintf(w, "%+v", snippet)
+	templates := []string{
+		"./cmd/web/ui/html/base.tmpl.html",
+		"./cmd/web/ui/html/partials/nav.tmpl.html",
+		"./cmd/web/ui/html/pages/view.tmpl.html",
+	}
+
+	ts, err := template.ParseFiles(templates...)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	err = ts.ExecuteTemplate(w, "base", snippet)
+	if err != nil {
+		app.serverError(w, r, err)
+	}
 }
 
 // snippetCreate displays a form for creating a snippet.
