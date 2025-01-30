@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"snipbox.fernandobasso.dev/internal/models"
 	"strconv"
@@ -20,27 +19,11 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templates := []string{
-		"./cmd/web/ui/html/base.tmpl.html",
-		"./cmd/web/ui/html/partials/nav.tmpl.html",
-		"./cmd/web/ui/html/pages/home.tmpl.html",
-	}
-
-	ts, err := template.ParseFiles(templates...)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-
 	data := templateData{
 		Snippets: snippets,
 	}
 
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
+	app.render(w, r, http.StatusOK, "home.tmpl.html", data)
 }
 
 // snippetView is a handler for viewing a specific snippet.
@@ -63,26 +46,11 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templates := []string{
-		"./cmd/web/ui/html/base.tmpl.html",
-		"./cmd/web/ui/html/partials/nav.tmpl.html",
-		"./cmd/web/ui/html/pages/view.tmpl.html",
-	}
-
-	ts, err := template.ParseFiles(templates...)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-
 	data := templateData{
 		Snippet: snippet,
 	}
 
-	err = ts.ExecuteTemplate(w, "base", data)
-	if err != nil {
-		app.serverError(w, r, err)
-	}
+	app.render(w, r, http.StatusOK, "view.tmpl.html", data)
 }
 
 // snippetCreate displays a form for creating a snippet.

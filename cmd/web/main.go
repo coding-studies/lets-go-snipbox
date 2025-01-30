@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"log/slog"
 	"net/http"
@@ -14,8 +15,9 @@ import (
 )
 
 type application struct {
-	logger   *slog.Logger
-	snippets *models.SnippetModel
+	logger    *slog.Logger
+	snippets  *models.SnippetModel
+	tmplCache map[string]*template.Template
 }
 
 func main() {
@@ -65,14 +67,20 @@ func main() {
 
 	db, err := openDB(*dsn)
 	defer db.Close()
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	tmplCache, err := newTemplateCache()
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
 	app := &application{
-		logger:   logger,
-		snippets: &models.SnippetModel{DB: db},
+		logger:    logger,
+		snippets:  &models.SnippetModel{DB: db},
+		tmplCache: tmplCache,
 	}
 
 	logger.Info("starting server", slog.String("port", *addr))
