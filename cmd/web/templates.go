@@ -6,5 +6,9 @@ import "snipbox.fernandobasso.dev/internal/models"
 // to templates (since templates can only take a single variable containing
 // data). By using a struct, we can pass a "bag" of composite data as needed.
 type templateData struct {
+	// For displaying a single snippet.
 	Snippet models.Snippet
+
+	// For displaying a list of snippets.
+	Snippets []models.Snippet
 }

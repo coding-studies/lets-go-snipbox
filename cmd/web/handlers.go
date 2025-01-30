@@ -20,28 +20,27 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for _, snippet := range snippets {
-		fmt.Fprintf(w, "%+v\n", snippet)
+	templates := []string{
+		"./cmd/web/ui/html/base.tmpl.html",
+		"./cmd/web/ui/html/partials/nav.tmpl.html",
+		"./cmd/web/ui/html/pages/home.tmpl.html",
 	}
 
-	//templates := []string{
-	//	"./cmd/web/ui/html/base.tmpl.html",
-	//	"./cmd/web/ui/html/partials/nav.tmpl.html",
-	//	"./cmd/web/ui/html/pages/home.tmpl.html",
-	//}
-	//
-	//ts, err := template.ParseFiles(templates...)
-	//if err != nil {
-	//	log.Print(err.Error())
-	//	app.serverError(w, r, err)
-	//	return
-	//}
-	//
-	//err = ts.ExecuteTemplate(w, "base", nil)
-	//if err != nil {
-	//	app.serverError(w, r, err)
-	//	return
-	//}
+	ts, err := template.ParseFiles(templates...)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
+
+	data := templateData{
+		Snippets: snippets,
+	}
+
+	err = ts.ExecuteTemplate(w, "base", data)
+	if err != nil {
+		app.serverError(w, r, err)
+		return
+	}
 }
 
 // snippetView is a handler for viewing a specific snippet.
