@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+
 	"snipbox.fernandobasso.dev/internal/models"
 )
 
@@ -10,6 +11,11 @@ import (
 // to templates (since templates can only take a single variable containing
 // data). By using a struct, we can pass a "bag" of composite data as needed.
 type templateData struct {
+	// Calculated dynamically so it will automatically reflect each year without
+	// requiring changes to the code. It is supposed to allways reflect the
+	// actual, current year.
+	CurrentYear int
+
 	// For displaying a single snippet.
 	Snippet models.Snippet
 

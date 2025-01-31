@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -32,6 +33,11 @@ func (app *application) serverError(w http.ResponseWriter, r *http.Request, err 
 func (app *application) clientError(w http.ResponseWriter, status int) {
 	http.Error(w, http.StatusText(status), status)
 }
+
+// render renders a given page.
+//
+// The page parameter refers to the basename of template we want to render, like
+// "home.tmpl.html" or "edit.tmpl.html".
 func (app *application) render(
 	w http.ResponseWriter,
 	r *http.Request,
@@ -46,8 +52,23 @@ func (app *application) render(
 		return
 	}
 
-	err := ts.ExecuteTemplate(w, "base", data)
+	buf := new(bytes.Buffer)
+
+	// Write the template to the buffer instead of directly to the response so
+	// we can make sure there are no errors before attempting to write a
+	// response to the user and thus presenting the user with the main page
+	// skeleton filled with an error message. Either we present the user with
+	// good, valid page view, or an error page, but not a mix.
+	err := ts.ExecuteTemplate(buf, "base", data)
 	if err != nil {
 		app.serverError(w, r, err)
+		return
 	}
+
+	// If no error, then we can safely use the status code we get from
+	// the parameter.
+	w.WriteHeader(status)
+
+	// And finally send the good page to the user.
+	buf.WriteTo(w)
 }
