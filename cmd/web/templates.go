@@ -3,6 +3,7 @@ package main
 import (
 	"html/template"
 	"path/filepath"
+	"time"
 
 	"snipbox.fernandobasso.dev/internal/models"
 )
@@ -21,6 +22,11 @@ type tmplData struct {
 
 	// For displaying a list of snippets.
 	Snippets []models.Snippet
+}
+
+// humanDateAndTime returns a nice, readable representation of time.Time.
+func humanDateAndTime(t time.Time) string {
+	return t.Format("02 Jan 2006 at 15:04")
 }
 
 // newTmplCache returns an in-memory cache of template sets.
