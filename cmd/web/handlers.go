@@ -19,7 +19,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := templateData{
+	data := tmplData{
 		Snippets: snippets,
 	}
 
@@ -46,7 +46,7 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := templateData{
+	data := tmplData{
 		Snippet: snippet,
 	}
 

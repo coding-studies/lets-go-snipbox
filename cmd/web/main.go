@@ -71,7 +71,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	tmplCache, err := newTemplateCache()
+	tmplCache, err := newTmplCache()
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)

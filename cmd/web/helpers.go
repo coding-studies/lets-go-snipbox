@@ -31,10 +31,10 @@ func (app *application) serverError(w http.ResponseWriter, r *http.Request, err 
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 
-// newTemplateData returns an instance of templateData, initializing it
+// newTmplData returns an instance of tmplData, initializing it
 // with the current year.
-func (app *application) newTemplateData(_ *http.Request) templateData {
-	return templateData{
+func (app *application) newTmplData(_ *http.Request) tmplData {
+	return tmplData{
 		CurrentYear: time.Now().Year(),
 	}
 }
@@ -52,7 +52,7 @@ func (app *application) render(
 	r *http.Request,
 	status int,
 	page string,
-	data templateData,
+	data tmplData,
 ) {
 	ts, ok := app.tmplCache[page]
 	if !ok {
