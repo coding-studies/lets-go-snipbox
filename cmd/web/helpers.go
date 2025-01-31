@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"runtime/debug"
+	"time"
 )
 
 // serverError writes a log entry including useful request information and then
@@ -28,6 +29,14 @@ func (app *application) serverError(w http.ResponseWriter, r *http.Request, err 
 	)
 
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+}
+
+// newTemplateData returns an instance of templateData, initializing it
+// with the current year.
+func (app *application) newTemplateData(_ *http.Request) templateData {
+	return templateData{
+		CurrentYear: time.Now().Year(),
+	}
 }
 
 func (app *application) clientError(w http.ResponseWriter, status int) {
