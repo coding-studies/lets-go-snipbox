@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"snipbox.fernandobasso.dev/internal/models"
 	"strconv"
+
+	"snipbox.fernandobasso.dev/internal/models"
 )
 
 // home is a handler which writes a byte slicing simple text as the
@@ -19,9 +20,8 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := tmplData{
-		Snippets: snippets,
-	}
+	data := app.newTmplData(r)
+	data.Snippets = snippets
 
 	app.render(w, r, http.StatusOK, "home.tmpl.html", data)
 }
@@ -46,9 +46,8 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := tmplData{
-		Snippet: snippet,
-	}
+	data := app.newTmplData(r)
+	data.Snippet = snippet
 
 	app.render(w, r, http.StatusOK, "view.tmpl.html", data)
 }
