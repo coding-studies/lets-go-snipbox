@@ -29,6 +29,10 @@ func humanDateAndTime(t time.Time) string {
 	return t.Format("02 Jan 2006 at 15:04")
 }
 
+var viewHelpers = template.FuncMap{
+	"humanDateAndTime": humanDateAndTime,
+}
+
 // newTmplCache returns an in-memory cache of template sets.
 //
 // To retrieve a template from the cache we must provide the basename of the
@@ -47,7 +51,9 @@ func newTmplCache() (map[string]*template.Template, error) {
 		baseName := filepath.Base(page)
 
 		// Parse the base template file into a template set.
-		ts, err := template.ParseFiles("./cmd/web/ui/html/base.tmpl.html")
+		ts, err := template.New(page).
+			Funcs(viewHelpers).
+			ParseFiles("./cmd/web/ui/html/base.tmpl.html")
 		if err != nil {
 			return nil, err
 		}
