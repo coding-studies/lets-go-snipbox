@@ -59,6 +59,9 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 
 // snippetCreatePost processes the post request to create a new snippet.
 func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request) {
+	// Fails if body contains more than 8912 bytes. Error surfaces to ParseForm().
+	r.Body = http.MaxBytesReader(w, r.Body, 8912)
+
 	err := r.ParseForm()
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
