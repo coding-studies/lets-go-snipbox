@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -52,17 +51,9 @@ func (app *application) snippetView(w http.ResponseWriter, r *http.Request) {
 
 // snippetCreate displays a form for creating a snippet.
 func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
-	title := "O snail"
-	content := "O snail\nClimb Mount Fuji,\nBut slowly, slowly!\n\n– Kobayashi Issa"
-	expires := 7
+	data := app.newTmplData(r)
 
-	insertedSnippetID, err := app.snippets.Insert(title, content, expires)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-
-	http.Redirect(w, r, fmt.Sprintf("/snippet/view/%d", insertedSnippetID), http.StatusSeeOther)
+	app.render(w, r, http.StatusOK, "create.tmpl.html", data)
 }
 
 // snippetCreatePost processes the post request to create a new snippet.
