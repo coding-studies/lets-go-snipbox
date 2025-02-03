@@ -32,12 +32,12 @@ func (m *SnippetModel) Insert(title string, content string, expires int) (int, e
 			, content
 			, created
 			, expires
-) VALUES (
-			$1
-		, $2
-		, CURRENT_TIMESTAMP
-		, CURRENT_TIMESTAMP + $3::INTERVAL
-) RETURNING id;
+		) VALUES (
+				$1
+			, $2
+			, CURRENT_TIMESTAMP
+			, CURRENT_TIMESTAMP + $3::INTERVAL
+		) RETURNING id;
 `
 
 	res := m.DB.QueryRow(stmt, title, content, exp)
