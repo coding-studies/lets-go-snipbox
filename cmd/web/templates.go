@@ -22,6 +22,9 @@ type tmplData struct {
 
 	// For displaying a list of snippets.
 	Snippets []models.Snippet
+
+	// Contains field validation errors (if any) with the submitted data.
+	Form any
 }
 
 // humanDateAndTime returns a nice, readable representation of time.Time.
