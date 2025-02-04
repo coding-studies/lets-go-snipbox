@@ -2,11 +2,14 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"runtime/debug"
 	"time"
+
+	"github.com/go-playground/form/v4"
 )
 
 // serverError writes a log entry including useful request information and then
@@ -80,4 +83,25 @@ func (app *application) render(
 
 	// And finally send the good page to the user.
 	buf.WriteTo(w)
+}
+
+func (app *application) decodePostForm(r *http.Request, dst any) error {
+	err := r.ParseForm()
+	if err != nil {
+		return err
+	}
+
+	err = app.formDecoder.Decode(dst, r.PostForm)
+	if err != nil {
+		var invalidDecoderError *form.InvalidDecoderError
+
+		// If we try to use an invalid/nil target destination, Decode() will return
+		// an error of the type *formInvalidDecoderError.
+		if errors.As(err, &invalidDecoderError) {
+			panic(err)
+		}
+	}
+
+	// For all other errors, return them as usual.
+	return err
 }

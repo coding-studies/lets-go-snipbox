@@ -63,12 +63,13 @@ func (app *application) snippetCreate(w http.ResponseWriter, r *http.Request) {
 }
 
 type snippetCreateForm struct {
-	Title   string
-	Content string
-	Expires int
+	Title   string `form:"title"`
+	Content string `form:"content"`
+	Expires int    `form:"expires"`
 
 	// Embeds Validator so snippetCreateForm “inherits” all fields from it.
-	validator.Validator
+	// The "-" tells the decoder to ignore this field.
+	validator.Validator `form:"-"`
 }
 
 // snippetCreatePost processes the post request to create a new snippet.
@@ -76,22 +77,18 @@ func (app *application) snippetCreatePost(w http.ResponseWriter, r *http.Request
 	// Fails if body contains more than 8912 bytes. Error surfaces to ParseForm().
 	r.Body = http.MaxBytesReader(w, r.Body, 8912)
 
-	err := r.ParseForm()
+	var form snippetCreateForm
+
+	err := app.decodePostForm(r, &form)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
 	}
 
-	expires, err := strconv.Atoi(r.PostForm.Get("expires"))
+	err = app.formDecoder.Decode(&form, r.PostForm)
 	if err != nil {
 		app.clientError(w, http.StatusBadRequest)
 		return
-	}
-
-	form := snippetCreateForm{
-		Title:   r.PostForm.Get("title"),
-		Content: r.PostForm.Get("content"),
-		Expires: expires,
 	}
 
 	form.CheckField(form.NotBlank(form.Title), "title", "This field cannot be blank")
