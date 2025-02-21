@@ -111,3 +111,13 @@ shows my father''s face.
    , CURRENT_TIMESTAMP
    , CURRENT_TIMESTAMP + INTERVAL '1 YEAR'
 );
+
+CREATE TABLE sessions (
+    token CHAR(43) PRIMARY KEY
+  , data BYTEA NOT NULL
+  , expiry TIMESTAMP(6) NOT NULL
+);
+
+CREATE INDEX idx_sessions_expiry ON sessions(expiry);
+
+ALTER TABLE sessions OWNER TO dev;
