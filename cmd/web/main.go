@@ -69,10 +69,10 @@ func main() {
 	}))
 
 	db, err := openDB(*dsn)
-	defer db.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	tmplCache, err := newTmplCache()
 	if err != nil {
