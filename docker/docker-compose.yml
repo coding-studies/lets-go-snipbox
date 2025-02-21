@@ -33,5 +33,15 @@ services:
       - "./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
       - "./dbdumps/:/dbdumps"
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: 'pgadmin'
+    env_file: .env
+    ports:
+      ##
+      # http://localhost:8000
+      #
+      - "8000:80"
+
 volumes:
   pg_snipbox_db_data:
