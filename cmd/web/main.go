@@ -9,8 +9,12 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/alexedwards/scs/mysqlstore"
+	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
+
 	"snipbox.fernandobasso.dev/internal/models"
 
 	_ "github.com/lib/pq"
@@ -21,6 +25,7 @@ type application struct {
 	snippets    *models.SnippetModel
 	tmplCache   map[string]*template.Template
 	formDecoder *form.Decoder
+	sessMgr     *scs.SessionManager
 }
 
 func main() {
@@ -80,11 +85,16 @@ func main() {
 		os.Exit(1)
 	}
 
+	sessMgr := scs.New()
+	sessMgr.Store = mysqlstore.New(db)
+	sessMgr.Lifetime = 12 * time.Hour
+
 	app := &application{
 		logger:      logger,
 		snippets:    &models.SnippetModel{DB: db},
 		tmplCache:   tmplCache,
 		formDecoder: form.NewDecoder(),
+		sessMgr:     sessMgr,
 	}
 
 	logger.Info("starting server", slog.String("port", *addr))
