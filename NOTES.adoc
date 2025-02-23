@@ -60,3 +60,33 @@ To prevent `/` for being treated as a catch-all glob, add `{$}` after it:
 It means a route pattern like `"/foo/view/{$}"` will require the request URL to be "https://example.org/foo/view/", including the trailing slash), else it will not match.
 
 Using `{$}` is only valid after the `/`, as route patterns that do not end with the slash are strict by definition.
+
+== Routing
+
+=== With session storage middleware
+
+We use `mux.Handle()` instead of `mux.HandleFunc()` because `alice.ThenFunc()` method returns an `http.Handler` rather than `http.HandlerFunc`.
+
+[source,go]
+----
+func (app *application) routes() http.Handler {
+	mux := http.NewServeMux()
+
+	fileServer := http.FileServer(http.Dir("./ui/static"))
+	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
+
+	// A new middleware specific for the dynamic routes.
+	dynamic := alice.New(app.sessMgr.LoadAndSave)
+
+	mux.Handle("GET /{$}", dynamic.ThenFunc(app.home))
+	mux.Handle("GET /snippet/view/{id}", dynamic.ThenFunc(app.snippetView))
+	mux.Handle("GET /snippet/create", dynamic.ThenFunc(app.snippetCreate))
+	mux.Handle("POST /snippet/create", dynamic.ThenFunc(app.snippetCreatePost))
+
+	// A standard middleware chain which is intended to be applied to every
+	// request the application receives.
+	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
+
+	return standard.Then(mux)
+}
+----
