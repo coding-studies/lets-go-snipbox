@@ -63,6 +63,72 @@ Using `{$}` is only valid after the `/`, as route patterns that do not end with 
 
 == Routing
 
+Create a serve mux:
+
+[source,go]
+----
+mux := http.NewServeMux()
+----
+
+From `mux`, we can use either `Handle()` or `HandleFunc()`.
+`Handle(handler)` takes a parameter that satisfies the `http.Handler` interface.
+
+=== HandleFunc() example
+
+This is the signature of `HandleFunc()`:
+
+[source,go]
+----
+HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request))
+----
+
+And with that piece of information in mind, we could craft a simple example like
+this one:
+
+[source,go]
+----
+func (app *application) check(w http.ResponseWriter, _ *http.Request) {
+	w.Write([]byte("It works! They said I was crazy but it works!!"))
+}
+
+
+mux := http.NewServeMux()
+mux.HandleFunc("GET /check", handlerFn)
+----
+
+=== HandleFunc() and alice middleware chaining
+
+Here we use `mux.HandleFunc()` because our handlers are actually methods.
+
+[source,go]
+----
+package main
+
+import (
+	"net/http"
+
+	"github.com/justinas/alice"
+)
+
+func (app *application) routes() http.Handler {
+	mux := http.NewServeMux()
+
+	fileServer := http.FileServer(http.Dir("./ui/static"))
+	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
+
+	mux.HandleFunc("GET /{$}", app.home)
+	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
+	mux.HandleFunc("GET /snippet/create", app.snippetCreate)
+	mux.HandleFunc("POST /snippet/create", app.snippetCreatePost)
+
+	// A standard middleware chain which is intended to be applied to every
+	// request the application receives.
+	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
+
+	return standard.Then(mux)
+}
+----
+
 === With session storage middleware
 
 We use `mux.Handle()` instead of `mux.HandleFunc()` because `alice.ThenFunc()` method returns an `http.Handler` rather than `http.HandlerFunc`.
