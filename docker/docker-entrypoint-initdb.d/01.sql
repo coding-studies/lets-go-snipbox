@@ -112,12 +112,21 @@ shows my father''s face.
    , CURRENT_TIMESTAMP + INTERVAL '1 YEAR'
 );
 
+------------------------------------------------------------------------
+-- <Session Manager>
+--
+-- https://github.com/alexedwards/scs/tree/master
+-- https://github.com/alexedwards/scs/tree/master/postgresstore
+--
 CREATE TABLE sessions (
-    token CHAR(43) PRIMARY KEY
-  , data BYTEA NOT NULL
-  , expiry TIMESTAMP(6) NOT NULL
+	token TEXT PRIMARY KEY,
+	data BYTEA NOT NULL,
+	expiry TIMESTAMPTZ NOT NULL
 );
 
-CREATE INDEX idx_sessions_expiry ON sessions(expiry);
+CREATE INDEX sessions_expiry_idx ON sessions (expiry);
 
 ALTER TABLE sessions OWNER TO dev;
+--
+-- </Session Manager>
+------------------------------------------------------------------------

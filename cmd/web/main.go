@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/alexedwards/scs/mysqlstore"
+	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-playground/form/v4"
 
@@ -86,7 +86,7 @@ func main() {
 	}
 
 	sessMgr := scs.New()
-	sessMgr.Store = mysqlstore.New(db)
+	sessMgr.Store = postgresstore.New(db)
 	sessMgr.Lifetime = 12 * time.Hour
 
 	app := &application{
