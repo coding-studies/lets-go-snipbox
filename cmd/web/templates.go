@@ -25,6 +25,9 @@ type tmplData struct {
 
 	// Contains field validation errors (if any) with the submitted data.
 	Form any
+
+	// Contains a flash message.
+	Flash string
 }
 
 // humanDateAndTime returns a nice, readable representation of time.Time.
