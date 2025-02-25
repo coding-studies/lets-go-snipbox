@@ -97,7 +97,7 @@ func main() {
 
 	logger.Info("starting server", slog.String("port", srv.Addr))
 
-	err = srv.ListenAndServe()
+	err = srv.ListenAndServeTLS("./tls/cert.pem", "./tls/key.pem")
 
 	logger.Error(err.Error())
 
