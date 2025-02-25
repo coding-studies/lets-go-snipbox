@@ -63,15 +63,7 @@ func main() {
 
 	flag.Parse()
 
-	////
-	// Log as JSON and make logs include debugging logs as well instead of
-	// the default behavior which is to only log from info and above. Also
-	// includes the source location where the log is being issued from.
-	//
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level:     slog.LevelDebug,
-		AddSource: true,
-	}))
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
 	db, err := openDB(*dsn)
 	if err != nil {
@@ -98,8 +90,9 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:    *addr,
-		Handler: app.routes(),
+		Addr:     *addr,
+		Handler:  app.routes(),
+		ErrorLog: slog.NewLogLogger(logger.Handler(), slog.LevelError),
 	}
 
 	logger.Info("starting server", slog.String("port", srv.Addr))
