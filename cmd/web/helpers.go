@@ -36,9 +36,10 @@ func (app *application) serverError(w http.ResponseWriter, r *http.Request, err 
 
 // newTmplData returns an instance of tmplData, initializing it
 // with the current year.
-func (app *application) newTmplData(_ *http.Request) tmplData {
+func (app *application) newTmplData(r *http.Request) tmplData {
 	return tmplData{
 		CurrentYear: time.Now().Year(),
+		Flash:       app.sessMgr.PopString(r.Context(), "flash"),
 	}
 }
 
