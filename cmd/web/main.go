@@ -97,9 +97,14 @@ func main() {
 		sessMgr:     sessMgr,
 	}
 
-	logger.Info("starting server", slog.String("port", *addr))
+	srv := &http.Server{
+		Addr:    *addr,
+		Handler: app.routes(),
+	}
 
-	err = http.ListenAndServe(*addr, app.routes())
+	logger.Info("starting server", slog.String("port", srv.Addr))
+
+	err = srv.ListenAndServe()
 
 	logger.Error(err.Error())
 
