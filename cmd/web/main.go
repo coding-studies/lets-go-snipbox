@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"database/sql"
 	"flag"
 	"fmt"
@@ -93,6 +94,10 @@ func main() {
 		Addr:     *addr,
 		Handler:  app.routes(),
 		ErrorLog: slog.NewLogLogger(logger.Handler(), slog.LevelError),
+		TLSConfig: &tls.Config{
+			// Use only the faster, assembly-implemented elliptic curves.
+			CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
+		},
 	}
 
 	logger.Info("starting server", slog.String("port", srv.Addr))
