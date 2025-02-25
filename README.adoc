@@ -22,6 +22,34 @@ Started the project with go 1.23.1.
 
 == Run the web application
 
+=== Transport Layer Security
+
+Generate a dev-only TLS certificate as it is required to run our application:
+
+[source,go]
+----
+$ mkdir -v ./tls
+$ cd ./tls
+
+$ find "$GOROOT" -iname '*generate_cert*'
+/home/deveng/.goenv/versions/1.24.0/src/crypto/tls/generate_cert.go
+
+$ go run "$GOROOT/src/crypto/tls/generate_cert.go" \
+    --rsa-bits=2048 \
+    --host=localhost
+2025/02/25 10:14:17 wrote cert.pem
+2025/02/25 10:14:17 wrote key.pem
+----
+
+[NOTE]
+====
+The browser will complain about an _untrusted_ certificate the first time the application is accessed
+That is fine as we know we are using a local, dev-only certificate that has not been trusted but an authority.
+The good thing is that we _can_ now run our application in local using a secure connection (HTTPS).
+====
+
+=== DB auth env vars
+
 Providing the database authentication details is necessary.
 This is currently done through the shell's environment variables:
 

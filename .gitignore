@@ -7,3 +7,9 @@
 # We can commit .env-example, but NEVER the actual .env file!
 #
 .env
+
+##
+# We have some local development .pem files inside ./tls/ that we
+# don't want to commit.
+#
+tls
