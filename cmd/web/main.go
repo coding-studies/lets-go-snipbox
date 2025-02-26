@@ -98,6 +98,10 @@ func main() {
 			// Use only the faster, assembly-implemented elliptic curves.
 			CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
 		},
+		IdleTimeout:    time.Minute,
+		ReadTimeout:    5 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 65556,
 	}
 
 	logger.Info("starting server", slog.String("port", srv.Addr))
