@@ -66,7 +66,7 @@ INSERT INTO users (
   , ('Aayla Secura');
 
 CREATE TABLE IF NOT EXISTS snippets (
-                                      id SERIAL PRIMARY KEY
+    id SERIAL PRIMARY KEY
   , title VARCHAR(128) NOT NULL
   , content TEXT NOT NULL
   , created TIMESTAMP NOT NULL
@@ -129,4 +129,21 @@ CREATE INDEX sessions_expiry_idx ON sessions (expiry);
 ALTER TABLE sessions OWNER TO dev;
 --
 -- </Session Manager>
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+-- <Sign Up and Authentication>
+--
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY
+  , name VARCHAR(255) NOT NULL
+  , email VARCHAR(255) NOT NULL
+  , hashed_password CHAR(60) NOT NULL
+  , created TIMESTAMPZ NOT NULL
+);
+
+ALTER TABLE users ADD CONSTRAINT users email UNIQUE (email);
+
+--
+-- </Sign Up and Authentication>
 ------------------------------------------------------------------------
