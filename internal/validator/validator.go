@@ -1,10 +1,16 @@
 package validator
 
 import (
+	"regexp"
 	"slices"
 	"strings"
 	"unicode/utf8"
 )
+
+// EmailRX contains a compiled email validation regex.
+//
+// Compile the email validation regex only once for performance.
+var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 // FieldName represents that name of the field whith errors, like "title",
 // "content" or "expires".
@@ -60,4 +66,14 @@ func (v *Validator) MaxChars(value string, max int) bool {
 // values; false otherwise.
 func PermittedValue[T comparable](value T, permittedValues ...T) bool {
 	return slices.Contains(permittedValues, value)
+}
+
+// MinChars returns a boolean indicating val contains at least n runes.
+func MinChars(val string, n int) bool {
+	return utf8.RuneCountInString(val) >= n
+}
+
+// Matches returns a boolean indicating whether val matches rx regex.
+func Matches(val string, rx *regexp.Regexp) bool {
+	return rx.MatchString(val)
 }
