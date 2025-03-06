@@ -28,6 +28,10 @@ type tmplData struct {
 
 	// Contains a flash message.
 	Flash string
+
+	IsAuthenticated bool
+
+	CSRFToken string
 }
 
 // humanDateAndTime returns a nice, readable representation of time.Time.
