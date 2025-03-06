@@ -12,7 +12,7 @@ import (
 // Compile the email validation regex only once for performance.
 var EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
-// FieldName represents that name of the field whith errors, like "title",
+// FieldName represents that name of the field with errors, like "title",
 // "content" or "expires".
 type FieldName = string
 
