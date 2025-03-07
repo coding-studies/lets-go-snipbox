@@ -139,11 +139,22 @@ CREATE TABLE IF NOT EXISTS users (
   , name VARCHAR(255) NOT NULL
   , email VARCHAR(255) NOT NULL
   , hashed_password CHAR(60) NOT NULL
-  , created TIMESTAMPZ NOT NULL
+  , created TIMESTAMPTZ NOT NULL
 );
 
-ALTER TABLE users ADD CONSTRAINT users email UNIQUE (email);
+ALTER TABLE users ADD CONSTRAINT users_unique_email UNIQUE (email);
 
+INSERT INTO users (
+    name
+  , email
+  , hashed_password
+  , created
+) VALUES (
+    'Yoda'
+  , 'yoda@theforce.dev'
+  , 'p4ssw0rd'
+  , CURRENT_TIMESTAMP
+);
 --
 -- </Sign Up and Authentication>
 ------------------------------------------------------------------------
