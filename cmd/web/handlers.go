@@ -156,7 +156,17 @@ func (app *application) userSignupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprint(w, "Create a new user first")
+	err = app.users.Insert(form.Name, form.Email, form.Password)
+	if errors.Is(err, models.ErrDuplicateEmail) {
+		form.AddFieldError("email", "Email address is already in use")
+
+		data := app.newTmplData(r)
+		data.Form = form
+		app.render(w, r, http.StatusUnprocessableEntity, "signup.tmpl.html", data)
+	}
+
+	app.sessMgr.Put(r.Context(), "flash", "Signup successful. Please log in.")
+	http.Redirect(w, r, "/user/login", http.StatusOK)
 }
 
 func (app *application) userLogin(w http.ResponseWriter, r *http.Request) {
