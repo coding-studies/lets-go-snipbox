@@ -43,24 +43,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 ALTER TABLE users ADD CONSTRAINT users_unique_email UNIQUE (email);
 
-----
--- We must not provide the IDs explicitly. We must instead let PostgreSQL handle
--- it so future insertions will continue incrementing the IDs automatially. If
--- we insert the IDs ourselves, like 1, 2, 3, then future insertions with
--- automatic ID will try to start from 1, and it will fail as there are already
--- the IDs 1, 2 and 3 in the table.
 --
-INSERT INTO users (
-    name
-  , email
-  , hashed_password
-  , created
-) VALUES (
-    'Yoda'
-  , 'yoda@theforce.dev'
-  , 'p4ssw0rd'
-  , CURRENT_TIMESTAMP
-);
+-- We don't insert sample users here (at last not as of this change) as
+-- then the user's password would be plain text instead of bcrypt'ed.
+--
 
 ----
 -- From the docs:

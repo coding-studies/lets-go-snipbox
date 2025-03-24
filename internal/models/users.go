@@ -44,7 +44,7 @@ func (m *UserModel) Insert(name, email, password string) error {
 		);
 	`
 
-	_, err = m.DB.Exec(stmt, name, email, password)
+	_, err = m.DB.Exec(stmt, name, email, hashedPassword)
 	if err != nil {
 		var pqErr *pq.Error
 		errors.As(err, &pqErr)
