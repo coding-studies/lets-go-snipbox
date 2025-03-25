@@ -3,7 +3,6 @@ package models
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/lib/pq"
@@ -49,20 +48,40 @@ func (m *UserModel) Insert(name, email, password string) error {
 		var pqErr *pq.Error
 		errors.As(err, &pqErr)
 		// unique_violation 23505
-		fmt.Printf("Class, name, code: %#v, %#v, %#v\n", pqErr.Code.Class(), pqErr.Code.Name(), pqErr.Code)
 		if pqErr.Code.Name() == "unique_violation" {
-			fmt.Printf("INSERT ERROR UNIQUE_VIOLATION", pqErr)
 			return ErrDuplicateEmail
 		}
 
 		return err
 	}
 
-	fmt.Printf("ALL GOOD: %#v\n", hashedPassword)
 	return nil
 }
 
-func (*UserModel) Authenticate(email, password string) (int, error) {
+func (m *UserModel) Authenticate(email, password string) (int, error) {
+	var id int
+	var hashedPassword []byte
+
+	stmt := "SELECT id, hashed_password FROM users WHERE email = $1"
+
+	err := m.DB.QueryRow(stmt, email).Scan(&id, &hashedPassword)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return 0, ErrInvalidCredentials
+		} else {
+			return 0, err
+		}
+	}
+
+	err = bcrypt.CompareHashAndPassword(hashedPassword, []byte(password))
+	if err != nil {
+		if errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
+			return 0, ErrInvalidCredentials
+		} else {
+			return 0, err
+		}
+	}
+
 	return 0, nil
 }
 

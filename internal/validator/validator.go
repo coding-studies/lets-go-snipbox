@@ -21,13 +21,14 @@ type FieldName = string
 type FieldErrorMessage = string
 
 type Validator struct {
-	FieldErrors map[FieldName]FieldErrorMessage
+	NonFieldErrors []string
+	FieldErrors    map[FieldName]FieldErrorMessage
 }
 
 // Valid returns true if there are no errors recorded in any of the fields;
 // false otherwise.
 func (v *Validator) Valid() bool {
-	return len(v.FieldErrors) == 0
+	return len(v.FieldErrors) == 0 && len(v.NonFieldErrors) == 0
 }
 
 // AddFieldError adds the error message to the given field if there is no
@@ -40,6 +41,16 @@ func (v *Validator) AddFieldError(name FieldName, message FieldErrorMessage) {
 	if _, exists := v.FieldErrors[name]; !exists {
 		v.FieldErrors[name] = message
 	}
+}
+
+// AddNonFieldError adds an error message for fields we prefer, for security
+// reasons, to not tell the user which exact field was wrong.
+//
+// For example, we prefer to say something like “invalid login credentials”
+// instead of “the email is OK, but the password is wrong”. It would make it
+// easier for attackers to figure things out.
+func (v *Validator) AddNonFieldError(message string) {
+	v.NonFieldErrors = append(v.NonFieldErrors, message)
 }
 
 // CheckField adds an error message to the given field name if the validation
